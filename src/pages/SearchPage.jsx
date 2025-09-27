@@ -1,14 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { getAllNotes } from '../utils/local-data';
 import { showFormattedDate } from '../utils';
+import { getActiveNotes } from '../utils/network-data';
 
 const SearchPage = () => {
 
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
-  const notes = getAllNotes();
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const filtered = notes.filter((note) => note.title.toLowerCase().includes(query.toLowerCase()));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {error, data} = await getActiveNotes();
+      if(!error) {
+        setNotes(data);
+        setLoading(false);
+      }
+    }
+    fetchData();
+  },[])
+
+  if(loading) {
+    return <p>Loading...</p>
+  }
 
   return (
     <div>
@@ -20,7 +36,7 @@ const SearchPage = () => {
         <section>
 
           {filtered.map((note) => (
-            <Link to={`/detail/${note.id}`} key={note.id}>
+            <Link to={`/notes/${note.id}`} key={note.id}>
               <h2>{note.title}</h2>
               <p>{showFormattedDate(note.createdAt)}</p>
               <p>{note.body}</p>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { register } from '../utils/network-data';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
 
@@ -11,7 +12,7 @@ const Register = () => {
 
 
 
-    const registerHandler = (e) => {
+    const registerHandler = async (e) => {
         e.preventDefault()
           const data = {
             name: name,
@@ -19,9 +20,9 @@ const Register = () => {
             password: password
           }
         
-          register(data);
+          const result = await register(data);
+          console.log(result)
           navigate("/login")
-          console.log(register(data))
 
           setName("");
           setEmail("");
@@ -31,7 +32,7 @@ const Register = () => {
   
 
     return (
-        <div>
+        <div className='input-register'>
             <p>
                Form Register
             </p>
@@ -52,6 +53,9 @@ const Register = () => {
                     <button type='submit'>Kirim</button>
                 </section>
             </form>
+            <Link to={"/login"}>
+                Sudah punya akun?
+            </Link>
         </div>
     )
 }

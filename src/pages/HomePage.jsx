@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { getAllNotes } from '../utils/local-data';
 import { Link, useNavigate } from 'react-router-dom';
 import { showFormattedDate } from '../utils';
 import { useContext } from 'react';
 import ThemeContext from '../context/themeContext';
 import Lang from '../context/languageContext';
+import { getActiveNotes } from '../utils/network-data';
+import { useEffect } from 'react';
 
 const HomePage = () => {
-  
-  const {theme, setTheme} = useContext(ThemeContext);
-  const {lang, setLang} = useContext(Lang);
-  const [notes, setNotes] = useState(getAllNotes());
+
+  const { theme, setTheme } = useContext(ThemeContext);
+  const { lang, setLang } = useContext(Lang);
+  const [notes, setNotes] = useState([]);
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
 
@@ -19,15 +20,28 @@ const HomePage = () => {
     navigate(`/search?q=${keyword}`);
   }
 
+  useEffect(() => {
+    const fetchNotes = async () => {
+      const { error, data } = await getActiveNotes();
+      if (!error) {
+        setNotes(data);
+      }
+    }
+    fetchNotes();
+  }, [])
+
+
 
   return (
     <div>
       <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-        ganti tema
+        {lang === "id" ? "Ganti Tema" : "Select Theme"}
       </button>
-      <button onClick={() => setLang(lang === "id" ? "eng" : "id")}>Ganti Bahasa</button>
+      <button onClick={() => setLang(lang === "id" ? "eng" : "id")}>{
+        lang === "id" ? "Ganti Bahasa" : "Select Language"
+        }</button>
       <form className='search-bar' onSubmit={handleSearch}>
-        <input placeholder='Cari catatan....' required type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+        <input placeholder={lang === "id" ? "Cari catatan..." : "Search notes..."} required type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
         <button type='submit' className='submit-search'>
           {lang === "id" ? "Kirim" : "Submit"}
         </button>
@@ -43,7 +57,7 @@ const HomePage = () => {
           {
             notes.filter((note) => note.archived == false).map((note) => (
               <section key={note.id}>
-                <Link to={`/detail/${note.id}`}  >
+                <Link to={`/notes/${note.id}`}  >
                   <p className='note-item__title'>
                     {note.title}
                   </p>

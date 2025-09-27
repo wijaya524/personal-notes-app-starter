@@ -1,36 +1,40 @@
 import React from 'react'
-import { login } from '../utils/network-data';
-import { useNavigate } from 'react-router-dom';
+import { login, putAccessToken } from '../utils/network-data';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-const LoginPage = () => {
+const LoginPage = ({ setIsLogged }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
 
-    const loginHandler = (e) => {
+    const loginHandler = async (e) => {
         e.preventDefault()
-          const data = {
-            email: email,
-            password: password
-          }
-        
-          login(data);
-          navigate("/")
-          console.log(login(data))
+        const { error, data } = await login({ email, password });
 
-      
-          setEmail("");
-          setPassword("");
+        if (!error) {
+            putAccessToken(data.accessToken)
+
+            if (data) {
+                setIsLogged(true)
+            }
+            navigate("/")
+        } else {
+            console.log("Ada yang salah dengan password/email")
+        }
+
+        setEmail("");
+        setPassword("");
 
 
     }
-    
+
 
     return (
-        <div>LoginPage
+        <div className='input-login'>
+            <p>Login Page</p>
             <form onSubmit={loginHandler}>
                 <section>
                     <label htmlFor="">Email</label>
@@ -44,6 +48,7 @@ const LoginPage = () => {
                     <button type='submit'>Kirim</button>
                 </section>
             </form>
+            <Link to={"/register"}>Belum Punya Akun?</Link>
         </div>
     )
 }

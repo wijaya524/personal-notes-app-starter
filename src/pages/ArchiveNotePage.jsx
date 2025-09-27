@@ -1,13 +1,26 @@
-import React from 'react'
-import { getArchivedNotes, unarchiveNote } from '../utils/local-data';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { showFormattedDate } from '../utils';
+import { getArchivedNotes, unarchiveNote } from '../utils/network-data';
 
 const ArchiveNotePage = () => {
 
 
-  const [notes, setNotes] = useState(getArchivedNotes());
+  const [notes, setNotes] = useState([]);
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {error, data} = await getArchivedNotes();
+
+      if(!error) {
+        setNotes(data);
+      }
+
+    }
+
+    fetchData();
+  },[])
 
 
   if (!notes) {
