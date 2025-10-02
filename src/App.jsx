@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation, useMatch } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import DetailPage from './pages/DetailPage';
 import SearchPage from './pages/SearchPage';
@@ -16,23 +16,29 @@ import Register from './pages/Register';
 import LoginPage from './pages/LoginPage';
 import { getAccessToken, getUserLogged } from './utils/network-data';
 import ProtectRoute from './utils/protect';
+import { MdOutlineGTranslate } from "react-icons/md";
+import { FaRegMoon } from "react-icons/fa";
+import { GoSun } from 'react-icons/go';
 
 
 function App() {
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("theme") || "light";
-  });
+  })
   const [lang, setLang] = useState(() => {
     return localStorage.getItem("lang") || "id"
   });
   const [isLogged, setIsLogged] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState([]);
+ 
 
-  useEffect(() => {
+    useEffect(() => {
     localStorage.setItem("theme", theme);
-  }, [theme])
+    document.documentElement.setAttribute("data-theme", theme);
+  },[theme])
+
 
   useEffect(() => {
     localStorage.setItem("lang", lang);
@@ -71,8 +77,10 @@ function App() {
   }
 
 
+
+
   return (
-    <BrowserRouter>
+    <>
       {loading ? (
         <div>
           <p>Loading....</p>
@@ -80,10 +88,10 @@ function App() {
       ) : (
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <Lang.Provider value={{ lang, setLang }}>
-            <div className="app-container" data-theme={theme} lang={lang}>
+            <div className="app-container" lang={lang}>
               {isLogged && (
                 <header>
-                  <h1>Hello, {user.name}</h1>
+                  <h1>Project Asah</h1>
                   <nav className="navigation">
                     <ul>
 
@@ -104,6 +112,14 @@ function App() {
                         <Link to={"/notes/archived"}>
                           <FaArchive />
                         </Link>
+                      </li>
+                      <li>
+                        <button onClick={() => setLang(lang === "id" ? "eng" : "id")}><MdOutlineGTranslate /></button>
+                      </li>
+                      <li>
+                        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                          {theme === "dark" ? <GoSun /> : <FaRegMoon />}
+                        </button>
                       </li>
                     </ul>
                   </nav>
@@ -147,7 +163,6 @@ function App() {
                   <Route path='/login' element={
                     <LoginPage setIsLogged={setIsLogged} />
                   } />
-
                 </Routes>
               </main>
             </div>
@@ -155,7 +170,7 @@ function App() {
         </ThemeContext.Provider>
       )}
 
-    </BrowserRouter>
+    </>
   );
 }
 

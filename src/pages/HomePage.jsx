@@ -7,9 +7,11 @@ import Lang from '../context/languageContext';
 import { getActiveNotes } from '../utils/network-data';
 import { useEffect } from 'react';
 
+
+
 const HomePage = () => {
 
-  const { theme, setTheme } = useContext(ThemeContext);
+
   const { lang, setLang } = useContext(Lang);
   const [notes, setNotes] = useState([]);
   const [keyword, setKeyword] = useState("");
@@ -33,18 +35,13 @@ const HomePage = () => {
 
 
   return (
-    <div>
-      <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-        {lang === "id" ? "Ganti Tema" : "Select Theme"}
-      </button>
-      <button onClick={() => setLang(lang === "id" ? "eng" : "id")}>{
-        lang === "id" ? "Ganti Bahasa" : "Select Language"
-        }</button>
+    <div >
       <form className='search-bar' onSubmit={handleSearch}>
         <input placeholder={lang === "id" ? "Cari catatan..." : "Search notes..."} required type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
         <button type='submit' className='submit-search'>
           {lang === "id" ? "Kirim" : "Submit"}
         </button>
+        
       </form>
 
       {notes.length === 0 ? (
