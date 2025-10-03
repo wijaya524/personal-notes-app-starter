@@ -9,7 +9,7 @@ const root = createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <HeroUIProvider>
-      <App />,
+      <App />
     </HeroUIProvider>
   </BrowserRouter>
 );

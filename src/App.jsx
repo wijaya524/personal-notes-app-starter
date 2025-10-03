@@ -7,8 +7,6 @@ import ArchiveNotePage from './pages/ArchiveNotePage'
 import AddNotePage from './pages/AddNote';
 import NotFoundPage from './pages/404NotFound';
 import { Link } from 'react-router-dom';
-import { FaPlus } from "react-icons/fa6";
-import { IoHome } from "react-icons/io5";
 import { FaArchive } from "react-icons/fa";
 import ThemeContext from './context/themeContext';
 import Lang from './context/languageContext';
@@ -19,7 +17,8 @@ import ProtectRoute from './utils/protect';
 import { MdOutlineGTranslate } from "react-icons/md";
 import { FaRegMoon } from "react-icons/fa";
 import { GoSun } from 'react-icons/go';
-
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useRef } from 'react';
 
 function App() {
 
@@ -32,12 +31,15 @@ function App() {
   const [isLogged, setIsLogged] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState([]);
- 
+  const [isOpen, setIsOpen] = useState(false);
+  const navRef = useRef(null);
+  const btnRef = useRef(null);
 
-    useEffect(() => {
+
+  useEffect(() => {
     localStorage.setItem("theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
-  },[theme])
+  }, [theme])
 
 
   useEffect(() => {
@@ -76,56 +78,107 @@ function App() {
     window.location.href = "/login";
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        navRef.current &&
+        !navRef.current.contains(event.target) &&
+        btnRef.current &&
+        !btnRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
 
 
   return (
     <>
       {loading ? (
-        <div>
-          <p>Loading....</p>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 space-y-4">
+          <AiOutlineLoading3Quarters className="text-blue-500 text-4xl animate-spin" />
+          <p className="text-blue-500 text-lg font-semibold">Loading....</p>
         </div>
       ) : (
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <Lang.Provider value={{ lang, setLang }}>
-            <div className="app-container" lang={lang}>
+            <div className="app-container max-w-7xl min-h-screen  dark:text-slate-50" lang={lang}>
               {isLogged && (
-                <header>
-                  <h1>Project Asah</h1>
-                  <nav className="navigation">
-                    <ul>
-
+                <header className="flex items-center justify-between px-4 md:px-10 py-3 bg-white dark:bg-gray-900 dark:text-slate-50 shadow-md">
+                  <Link to={"/"}>
+                    <img src="/public/logo-header.png" alt="logo-header" width={120} />
+                  </Link>
+                  <button
+                    ref={btnRef}
+                    className="md:hidden p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    onClick={() => setIsOpen(!isOpen)}
+                  >
+                    <svg
+                      className="w-6 h-6 text-gray-700 dark:text-slate-50"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                      />
+                    </svg>
+                  </button>
+                  <nav
+                    ref={navRef}
+                    className={`flex bg-gray-100  md:flex-row md:flex absolute md:static top-16 left-0 w-full md:w-auto  dark:bg-gray-900 md:bg-transparent transition-all duration-300 ease-in-out z-50 ${isOpen ? "flex" : "hidden"
+                      } md:flex`}
+                  >
+                    <ul className="w-full flex  items-center justify-evenly   md:flex-row md:items-center gap-4 p-4 md:p-0">
                       <li>
-                        <button className='button-logout' onClick={deleteToken}>LogOut</button>
-                      </li>
-                      <li className='botton-home'>
-                        <Link to={'/'}>
-                          <IoHome />
+                        <Link
+                          to="/notes/archived"
+                          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <FaArchive size={20} />
                         </Link>
                       </li>
-                      <li className='add-new-page__action'>
-                        <Link to={'/notes/new'}>
-                          <FaPlus />
-                        </Link>
+                      <li>
+                        <button
+                          onClick={() => setLang(lang === "id" ? "eng" : "id")}
+                          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          <MdOutlineGTranslate size={20} />
+                        </button>
                       </li>
                       <li>
-                        <Link to={"/notes/archived"}>
-                          <FaArchive />
-                        </Link>
+                        <button
+                          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                        >
+                          {theme === "dark" ? <GoSun size={20} /> : <FaRegMoon size={20} />}
+                        </button>
                       </li>
                       <li>
-                        <button onClick={() => setLang(lang === "id" ? "eng" : "id")}><MdOutlineGTranslate /></button>
-                      </li>
-                      <li>
-                        <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-                          {theme === "dark" ? <GoSun /> : <FaRegMoon />}
+                        <button
+                          className="px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition-colors"
+                          onClick={deleteToken}
+                        >
+                          LogOut
                         </button>
                       </li>
                     </ul>
                   </nav>
                 </header>
               )}
-              <main>
+              <main className='relative px-10 py-5'>
+
                 <Routes>
                   <Route path='/' element={
                     <ProtectRoute isLogged={isLogged}>

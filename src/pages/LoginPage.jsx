@@ -1,56 +1,73 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { login, putAccessToken } from '../utils/network-data';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 const LoginPage = ({ setIsLogged }) => {
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-
     const loginHandler = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         const { error, data } = await login({ email, password });
 
         if (!error) {
-            putAccessToken(data.accessToken)
-
-            if (data) {
-                setIsLogged(true)
-            }
-            navigate("/")
+            putAccessToken(data.accessToken);
+            if (data) setIsLogged(true);
+            navigate("/");
         } else {
-            console.log("Ada yang salah dengan password/email")
+            console.log("Ada yang salah dengan password/email");
         }
 
         setEmail("");
         setPassword("");
-
-
-    }
-
+    };
 
     return (
-        <div className='input-login'>
-            <p>Login Page</p>
-            <form onSubmit={loginHandler}>
-                <section>
-                    <label htmlFor="">Email</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </section>
-                <section>
-                    <label htmlFor="">Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </section>
-                <section>
-                    <button type='submit'>Kirim</button>
-                </section>
-            </form>
-            <Link to={"/register"}>Belum Punya Akun?</Link>
+        <div className=" flex items-center justify-center  p-4">
+            <div className="w-full max-w-md p-8 rounded-lg shadow-md text-slate-50">
+                <h1 className="text-2xl font-bold mb-6 text-center ">Login Page</h1>
+                <form onSubmit={loginHandler} className="space-y-4">
+                    <div>
+                        <label className="block  mb-1" htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-4 py-2 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Masukkan email"
+                        />
+                    </div>
+                    <div>
+                        <label className="block  mb-1" htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full px-4 py-2 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Masukkan password"
+                        />
+                    </div>
+                    <div>
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                        >
+                            Login
+                        </button>
+                    </div>
+                </form>
+                <p className="mt-4 text-center ">
+                    Belum punya akun?{' '}
+                    <Link to="/register" className="text-blue-500 hover:underline">
+                        Daftar di sini
+                    </Link>
+                </p>
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default LoginPage
+export default LoginPage;
