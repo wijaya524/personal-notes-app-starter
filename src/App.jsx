@@ -112,7 +112,7 @@ function App() {
           <Lang.Provider value={{ lang, setLang }}>
             <div className="app-container max-w-7xl min-h-screen  dark:text-slate-50" lang={lang}>
               {isLogged && (
-                <header className="flex items-center justify-between px-4 md:px-10 py-3 bg-white dark:bg-gray-900 dark:text-slate-50 shadow-md">
+                <header className="flex items-center justify-between px-4 md:px-10 bg-white dark:bg-gray-900 dark:text-slate-50 shadow-md">
                   <Link to={"/"}>
                     <img src="/public/logo-header.png" alt="logo-header" width={120} />
                   </Link>

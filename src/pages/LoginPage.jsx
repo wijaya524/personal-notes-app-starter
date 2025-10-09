@@ -24,12 +24,12 @@ const LoginPage = ({ setIsLogged }) => {
     };
 
     return (
-        <div className=" flex items-center justify-center  p-4">
-            <div className="w-full max-w-md p-8 rounded-lg shadow-md text-slate-50">
-                <h1 className="text-2xl font-bold mb-6 text-center ">Login Page</h1>
+        <div className=" flex items-center justify-center  p-4 ">
+            <div className="w-full max-w-md p-8 rounded-lg shadow-md ">
+                <h1 className="text-2xl font-bold mb-6 text-center  text-slate-900 dark:text-slate-50">Login Page</h1>
                 <form onSubmit={loginHandler} className="space-y-4">
                     <div>
-                        <label className="block  mb-1" htmlFor="email">Email</label>
+                        <label className="block  mb-1 text-slate-900 dark:text-slate-50" htmlFor="email">Email</label>
                         <input
                             id="email"
                             type="email"
@@ -40,7 +40,7 @@ const LoginPage = ({ setIsLogged }) => {
                         />
                     </div>
                     <div>
-                        <label className="block  mb-1" htmlFor="password">Password</label>
+                        <label className="block  mb-1 text-slate-900 dark:text-slate-50" htmlFor="password">Password</label>
                         <input
                             id="password"
                             type="password"
@@ -53,13 +53,13 @@ const LoginPage = ({ setIsLogged }) => {
                     <div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                            className="w-full bg-blue-500 text-slate-50 dark:text-slate-900 py-2 rounded-lg hover:bg-blue-600 transition-colors"
                         >
                             Login
                         </button>
                     </div>
                 </form>
-                <p className="mt-4 text-center ">
+                <p className="mt-4 text-center text-slate-900 dark:text-slate-50">
                     Belum punya akun?{' '}
                     <Link to="/register" className="text-blue-500 hover:underline">
                         Daftar di sini
